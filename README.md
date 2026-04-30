@@ -15,6 +15,7 @@ Allowed branch types:
 - `feature` - for new functionality
 - `bug` - for bug fixes
 - `test` - for test-related changes
+- `docs` - for adding documentation
 
 The task code should match the Trello/Jira task ID, for example `INT-05`.
 
