@@ -1,14 +1,18 @@
 name: Backend Tests 🧪
 
-on: [ pull_request ]
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-tests.yml"
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout sources 📄
         uses: actions/checkout@v6
@@ -16,8 +20,9 @@ jobs:
       - name: Setup Java ☕
         uses: actions/setup-java@v5
         with:
-          distribution: 'temurin'
-          java-version: 24
+          distribution: "temurin"
+          java-version: 21
 
       - name: Run backend tests 🧪
-        run: ./backend/gradlew -p ./backend/ test -PexcludeTags=architecture
+        run: ./gradlew test -PexcludeTags=architecture
+        working-directory: backend
