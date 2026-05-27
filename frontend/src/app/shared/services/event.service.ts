@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Event } from '../models/event.model';
+import { Observable, catchError, throwError, ReplaySubject } from 'rxjs';
+import { Event, CreateEventRequest, CreateEventResponse } from '../models/event.model';
 import { RegisteredVolunteerDto } from '../models/volunteer.model';
-import { Observable, ReplaySubject } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
