@@ -6,8 +6,8 @@ export interface Event {
   startAt: string;
   endAt: string;
   createdAt: string;
-  maxParticipants: number | null;
-  category?: string;
+  maxParticipants: number;
+  currentParticipants: number;
   registrationDeadline?: string;
   isFull: boolean;
 }

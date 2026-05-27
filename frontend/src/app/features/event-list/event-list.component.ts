@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Observable } from 'rxjs'; // 1. Import Observable
 import { Event } from '../../shared/models/event.model';
 import { EventService } from '../../shared/services/event.service';
 
@@ -11,13 +12,11 @@ import { EventService } from '../../shared/services/event.service';
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.css'],
 })
-export class EventListComponent implements OnInit {
-  events: Event[] = [];
+export class EventListComponent {
+  events$: Observable<Event[]>;
 
-  constructor(private eventService: EventService) {}
-
-  ngOnInit(): void {
-    this.events = this.eventService.getEvents();
+  constructor(private eventService: EventService) {
+    this.events$ = this.eventService.getEvents();
   }
 
 }

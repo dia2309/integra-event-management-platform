@@ -27,7 +27,12 @@ export class EventDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.event = this.eventService.getEventById(id);
+    this.eventService.getEventById(id).subscribe({
+      next: (data) => {
+        this.event = data;
+      },
+      error: (err) => console.error("Error fetching event details:", err)
+    });
 
     this.searchSubject
       .pipe(
@@ -55,6 +60,12 @@ export class EventDetailsComponent implements OnInit {
     this.searchSubject.next(input.value);
   }
   
+  // Add this helper method to your class
+getRegistrationDeadline(startAt: Date | string): Date {
+  const date = new Date(startAt);
+  // Subtract 1 day (in milliseconds: 24 hours * 60 mins * 60 secs * 1000)
+  return new Date(date.getTime() - (24 * 60 * 60 * 1000));
+}
 
   onRegister(): void {
     if (this.event) {
