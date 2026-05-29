@@ -22,7 +22,7 @@ export class EventDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
-    private cdr: ChangeDetectorRef, 
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +31,7 @@ export class EventDetailsComponent implements OnInit {
       next: (data) => {
         this.event = data;
       },
-      error: (err) => console.error("Error fetching event details:", err)
+      error: (err) => console.error('Error fetching event details:', err),
     });
 
     this.searchSubject
@@ -59,17 +59,43 @@ export class EventDetailsComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     this.searchSubject.next(input.value);
   }
-  
-  // Add this helper method to your class
-getRegistrationDeadline(startAt: Date | string): Date {
-  const date = new Date(startAt);
-  // Subtract 1 day (in milliseconds: 24 hours * 60 mins * 60 secs * 1000)
-  return new Date(date.getTime() - (24 * 60 * 60 * 1000));
-}
+
+  getRegistrationDeadline(startAt: Date | string): Date {
+    const date = new Date(startAt);
+    return new Date(date.getTime() - 24 * 60 * 60 * 1000);
+  }
+
+  isClosed(): boolean {
+    return this.event ? new Date() > this.getRegistrationDeadline(this.event.startAt) : false;
+  }
+
+  get isAlreadyRegistered(): boolean {
+    const dummyUserEmail = 'andrei.popescu@example.com';
+    return this.volunteers.some((volunteer) => volunteer.email === dummyUserEmail);
+  }
 
   onRegister(): void {
-    if (this.event) {
-      alert(`Success! You have registered for: ${this.event.title}.`);
-    }
+    if (!this.event) return;
+    if (this.volunteers.length >= this.event.maxParticipants) return;
+
+    const dummyUserId = 1;
+
+    this.eventService.registerForEvent(this.event.id, dummyUserId).subscribe({
+      next: (response) => {
+        alert('You have successfully registered!');
+
+        if (!this.event) return;
+        this.eventService.getVolunteers(this.event.id, this.searchSubject.value).subscribe({
+          next: (freshData) => {
+            this.volunteers = freshData;
+            this.cdr.detectChanges();
+          },
+        });
+      },
+      error: (err) => {
+        console.error('Registration failed', err);
+        alert('Something went wrong. You might already be registered!');
+      },
+    });
   }
 }

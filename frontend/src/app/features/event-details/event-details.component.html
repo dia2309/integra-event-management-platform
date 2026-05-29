@@ -102,7 +102,10 @@
 
         <footer class="registration-footer">
           <button
-            [disabled]="volunteers.length >= event.maxParticipants"
+            (click)="onRegister()"
+            [disabled]="
+              volunteers.length >= event.maxParticipants || isAlreadyRegistered || isClosed()
+            "
             class="primary-btn view-btn"
             [style.opacity]="volunteers.length >= event.maxParticipants ? '0.5' : '1'"
             [style.cursor]="volunteers.length >= event.maxParticipants ? 'not-allowed' : 'pointer'"

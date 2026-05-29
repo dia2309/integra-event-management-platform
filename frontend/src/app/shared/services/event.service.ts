@@ -10,6 +10,7 @@ import { HttpParams } from '@angular/common/http';
 })
 export class EventService {
   private baseUrl = 'http://localhost:8080/api/events';
+  private registrationUrl = 'http://localhost:8080/api/registrations';
   private eventSubject = new ReplaySubject<Event[]>(1);
   constructor(private http: HttpClient) {}
 
@@ -36,5 +37,19 @@ export class EventService {
     }
 
     return this.http.get<RegisteredVolunteerDto[]>(url, { params });
+  }
+
+  create(payload: any): Observable<any> {
+    return this.http.post(this.baseUrl, payload);
+  }
+
+  registerForEvent(eventId: number, userId: number): Observable<any> {
+    const payload = {
+      eventId: eventId,
+      userId: userId,
+      status: 'PENDING',
+    };
+
+    return this.http.post(this.registrationUrl, payload);
   }
 }
