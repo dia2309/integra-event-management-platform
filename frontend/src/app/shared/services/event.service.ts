@@ -52,4 +52,9 @@ export class EventService {
 
     return this.http.post(this.registrationUrl, payload);
   }
+
+  updateEvent(eventId: number, payload: CreateEventRequest): Observable<Event> {
+    const url = `${this.baseUrl}/${eventId}`;
+    return this.http.put<Event>(url, payload);
+  }
 }

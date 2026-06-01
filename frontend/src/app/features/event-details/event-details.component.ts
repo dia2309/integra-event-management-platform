@@ -1,16 +1,23 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, switchMap, startWith } from 'rxjs';
 import { map } from 'rxjs';
-import { Event } from '../../shared/models/event.model';
+import { Event, CreateEventRequest } from '../../shared/models/event.model';
 import { RegisteredVolunteerDto } from '../../shared/models/volunteer.model';
 import { EventService } from '../../shared/services/event.service';
 
 @Component({
   selector: 'app-event-details',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './event-details.component.html',
   styleUrls: ['./event-details.component.css'],
 })
@@ -19,17 +26,25 @@ export class EventDetailsComponent implements OnInit {
   volunteers: RegisteredVolunteerDto[] = [];
   private searchSubject = new BehaviorSubject<string>('');
 
+  isEditMode = false;
+  isSaving = false;
+  errorMessage = '';
+  editForm!: FormGroup;
+
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
     private cdr: ChangeDetectorRef,
+    private fb: FormBuilder,
   ) {}
 
   ngOnInit(): void {
+    this.initForm();
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.eventService.getEventById(id).subscribe({
       next: (data) => {
         this.event = data;
+        this.editForm.patchValue(this.event);
       },
       error: (err) => console.error('Error fetching event details:', err),
     });
@@ -55,6 +70,70 @@ export class EventDetailsComponent implements OnInit {
       });
   }
 
+  initForm(): void {
+    this.editForm = this.fb.group(
+      {
+        title: ['', Validators.required],
+        description: ['', Validators.required],
+        location: ['', Validators.required],
+        startAt: ['', Validators.required],
+        endAt: ['', Validators.required],
+        maxParticipants: [1, [Validators.required, Validators.min(1)]],
+      },
+      { validators: this.dateValidator },
+    );
+  }
+
+  dateValidator(group: AbstractControl): { [key: string]: boolean } | null {
+    const start = group.get('startAt')?.value;
+    const end = group.get('endAt')?.value;
+    if (start && end && new Date(end) <= new Date(start)) {
+      return { dateMismatch: true };
+    }
+    return null;
+  }
+
+  toggleEditMode(): void {
+    this.isEditMode = true;
+    this.errorMessage = '';
+    if (this.event) this.editForm.patchValue(this.event);
+  }
+
+  cancelEdit(): void {
+    this.isEditMode = false;
+    this.errorMessage = '';
+    if (this.event) this.editForm.patchValue(this.event);
+  }
+
+  saveEvent(): void {
+    if (this.editForm.invalid || !this.event) {
+      this.errorMessage = 'Please check the form for errors.';
+      return;
+    }
+
+    this.isSaving = true;
+    this.errorMessage = '';
+
+    const updatePayload: CreateEventRequest = this.editForm.value;
+
+    this.eventService.updateEvent(this.event.id, updatePayload).subscribe({
+      next: (updatedEvent) => {
+        this.event = updatedEvent;
+        this.isEditMode = false;
+        this.isSaving = false;
+        this.cdr.detectChanges();
+        setTimeout(() => {
+          alert('Event updated successfully.');
+        }, 10);
+      },
+      error: (err) => {
+        console.error('Update failed:', err);
+        this.errorMessage = 'Could not update event. Please check the form and try again.';
+        this.isSaving = false;
+      },
+    });
+  }
+
   onSearch(event: any): void {
     const input = event.target as HTMLInputElement;
     this.searchSubject.next(input.value);
@@ -77,7 +156,10 @@ export class EventDetailsComponent implements OnInit {
   onRegister(): void {
     if (!this.event) return;
     if (this.volunteers.length >= this.event.maxParticipants) return;
-
+    alert(`Registration button clicked! Backend integration coming soon`);
+    /* ======================================================================
+    COMMENTED OUT FOR GIT COMMIT (INCOMPLETE FEATURE)
+    ======================================================================
     const dummyUserId = 1;
 
     this.eventService.registerForEvent(this.event.id, dummyUserId).subscribe({
@@ -97,5 +179,7 @@ export class EventDetailsComponent implements OnInit {
         alert('Something went wrong. You might already be registered!');
       },
     });
+    ======================================================================
+    */
   }
 }
