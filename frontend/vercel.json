@@ -7,7 +7,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://NUME-BACKEND.onrender.com/api/:path*"
+      "destination": "https://integra-backend-wq32.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
