@@ -41,6 +41,25 @@ install before running the project:
    npm run start
 ```
 
+## Frontend Deploy on Vercel
+
+The Angular app is deployed as static files generated in `frontend/dist/frontend/browser`.
+
+1. Push the repository to GitHub.
+
+2. In Vercel, import the GitHub repository and set:
+   - Root Directory: `frontend`
+   - Framework Preset: `Angular`
+   - Install Command: `npm ci`
+   - Build Command: `npm run build`
+   - Output Directory: `dist/frontend/browser`
+
+3. Deploy the project.
+
+The `frontend/vercel.json` file keeps these settings in the repo and adds a fallback to `index.html` so Angular Router routes work after refresh.
+
+For local development, Angular uses `frontend/proxy.conf.json` to forward `/api` to `http://localhost:8080`. In production, the Spring Boot API must be deployed separately and exposed under the same `/api` path with a reverse proxy, or the frontend services must be changed to use the deployed backend URL.
+
 ## PostgreSQL Setup
 
 1. Open DBeaver and connect to your PostgreSQL server (ex: default `postgres` database)
