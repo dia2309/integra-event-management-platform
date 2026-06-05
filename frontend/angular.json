@@ -27,7 +27,7 @@
           "options": {
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
-            "localize": true,
+            "localize": false,
             "i18nMissingTranslation": "warning",
             "assets": [
               {
@@ -47,7 +47,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "1MB",
                   "maximumError": "1MB"
                 },
                 {

@@ -4,6 +4,7 @@ import { Event, CreateEventRequest, CreateEventResponse } from '../models/event.
 import { RegisteredVolunteerDto } from '../models/volunteer.model';
 import { HttpClient } from '@angular/common/http';
 import { HttpParams } from '@angular/common/http';
+import { EventColumn } from '../models/event.model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,17 @@ export class EventService {
   private baseUrl = 'http://localhost:8080/api/events';
   private registrationUrl = 'http://localhost:8080/api/registrations';
   private eventSubject = new ReplaySubject<Event[]>(1);
+
+  readonly EVENT_COLUMNS: EventColumn[] = [
+    { key: 'title', label: 'Event Title', type: 'string' },
+    { key: 'category', label: 'Category', type: 'string' },
+    { key: 'location', label: 'Location', type: 'string' },
+    { key: 'startAt', label: 'Start Date', type: 'datetime' },
+    { key: 'endAt', label: 'End Date', type: 'datetime' },
+    { key: 'maxParticipants', label: 'Capacity', type: 'number' },
+    { key: 'isFull', label: 'Status', type: 'boolean' }
+  ];
+
   constructor(private http: HttpClient) {}
 
   getEvents(): Observable<Event[]> {

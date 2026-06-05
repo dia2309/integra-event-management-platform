@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -130,6 +130,17 @@ export class EventDetailsComponent implements OnInit {
         console.error('Update failed:', err);
         this.errorMessage = 'Could not update event. Please check the form and try again.';
         this.isSaving = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+  getEventById(id: number) {
+    this.eventService.getEventById(id).subscribe({
+      next: (res: any) => {
+        this.event = res;
+      },
+      error: (err: any) => {
+        console.log(err.message);
       },
     });
   }
