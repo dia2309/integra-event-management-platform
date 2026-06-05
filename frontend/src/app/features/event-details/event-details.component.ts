@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, switchMap, startWith } from 'rxjs';
@@ -15,6 +15,8 @@ import { EventService } from '../../shared/services/event.service';
   styleUrls: ['./event-details.component.css'],
 })
 export class EventDetailsComponent implements OnInit {
+ 
+
   event?: Event;
   volunteers: RegisteredVolunteerDto[] = [];
   private searchSubject = new BehaviorSubject<string>('');
@@ -33,6 +35,7 @@ export class EventDetailsComponent implements OnInit {
       },
       error: (err) => console.error('Error fetching event details:', err),
     });
+    this.getEventById(id)
 
     this.searchSubject
       .pipe(
@@ -53,6 +56,17 @@ export class EventDetailsComponent implements OnInit {
         },
         error: (err) => console.error(err),
       });
+  }
+
+  getEventById(id:number){
+    this.eventService.getEventById(id).subscribe({
+      next:(res: any)=>{
+        this.event = res
+      },
+      error:(err: any)=>{
+        console.log(err.message)
+      }
+    })
   }
 
   onSearch(event: any): void {

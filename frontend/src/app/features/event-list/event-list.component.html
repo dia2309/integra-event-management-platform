@@ -10,6 +10,10 @@
     <div *ngFor="let event of events$ | async" class="event-summary-card">
       <h3>{{ event.title }}</h3>
       <p>{{ event.description }}</p>
+    @for (event of events(); track event.id) {
+      <div class="event-summary-card">
+        <span class="category-badge" *ngIf="event.category">{{ event.category }}</span>
+        <h3>{{ event.title }}</h3>
 
       <div class="quick-info">
         <p>📍 {{ event.location }}</p>

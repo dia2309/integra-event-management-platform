@@ -4,6 +4,7 @@ import { Event, CreateEventRequest, CreateEventResponse } from '../models/event.
 import { RegisteredVolunteerDto } from '../models/volunteer.model';
 import { HttpClient } from '@angular/common/http';
 import { HttpParams } from '@angular/common/http';
+import { EventColumn } from '../models/event-model';
 
 @Injectable({
   providedIn: 'root',
