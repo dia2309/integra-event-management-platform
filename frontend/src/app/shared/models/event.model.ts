@@ -8,8 +8,16 @@ export interface Event {
   createdAt: string;
   maxParticipants: number;
   currentParticipants: number;
-  registrationDeadline?: string;
+  category?: string;           
+  registrationDeadline?: string; 
   isFull: boolean;
+}
+
+
+export interface EventColumn {
+  key: keyof Event; 
+  label: string;
+  type: 'number' | 'string' | 'datetime' | 'boolean';
 }
 
 export interface CreateEventRequest {

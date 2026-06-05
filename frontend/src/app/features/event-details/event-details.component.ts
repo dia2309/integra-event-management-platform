@@ -15,8 +15,6 @@ import { EventService } from '../../shared/services/event.service';
   styleUrls: ['./event-details.component.css'],
 })
 export class EventDetailsComponent implements OnInit {
- 
-
   event?: Event;
   volunteers: RegisteredVolunteerDto[] = [];
   private searchSubject = new BehaviorSubject<string>('');
@@ -35,7 +33,7 @@ export class EventDetailsComponent implements OnInit {
       },
       error: (err) => console.error('Error fetching event details:', err),
     });
-    this.getEventById(id)
+    this.getEventById(id);
 
     this.searchSubject
       .pipe(
@@ -58,15 +56,15 @@ export class EventDetailsComponent implements OnInit {
       });
   }
 
-  getEventById(id:number){
+  getEventById(id: number) {
     this.eventService.getEventById(id).subscribe({
-      next:(res: any)=>{
-        this.event = res
+      next: (res: any) => {
+        this.event = res;
       },
-      error:(err: any)=>{
-        console.log(err.message)
-      }
-    })
+      error: (err: any) => {
+        console.log(err.message);
+      },
+    });
   }
 
   onSearch(event: any): void {
@@ -91,25 +89,6 @@ export class EventDetailsComponent implements OnInit {
   onRegister(): void {
     if (!this.event) return;
     if (this.volunteers.length >= this.event.maxParticipants) return;
-
-    const dummyUserId = 1;
-
-    this.eventService.registerForEvent(this.event.id, dummyUserId).subscribe({
-      next: (response) => {
-        alert('You have successfully registered!');
-
-        if (!this.event) return;
-        this.eventService.getVolunteers(this.event.id, this.searchSubject.value).subscribe({
-          next: (freshData) => {
-            this.volunteers = freshData;
-            this.cdr.detectChanges();
-          },
-        });
-      },
-      error: (err) => {
-        console.error('Registration failed', err);
-        alert('Something went wrong. You might already be registered!');
-      },
-    });
+    alert(`Registration button clicked! Backend integration coming soon`);
   }
 }
