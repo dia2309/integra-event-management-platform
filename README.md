@@ -43,3 +43,4 @@ The application features a decoupled architecture, ensuring a secure, scalable, 
 1. Navigate to the frontend folder: `cd frontend`
 2. Install the required Node modules: `npm install`
 3. Start the Angular development server: `npm start`
+4. Open your browser and navigate to http://localhost:4200
